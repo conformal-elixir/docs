@@ -1,0 +1,86 @@
+name: Build and deploy docs
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/docs.yml
+  schedule:
+    - cron: "23 4 * * 1"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.20.2
+          otp-version: 27.3.4.14
+
+      - uses: ziglang/setup-zig@v2
+        with:
+          version: 0.16.0
+
+      - name: Checkout beaver and kinda
+        run: |
+          git clone --depth 1 https://github.com/beaver-lodge/beaver.git
+          git clone --depth 1 https://github.com/beaver-lodge/kinda.git
+
+      - name: Install prebuilt LLVM/MLIR
+        run: bash beaver/scripts/install-prebuilt-llvm.sh llvm-prebuilt
+        env:
+          LLVM_EUDSL_ASSET_REVISION: latest
+
+      - name: Build Kinda docs
+        working-directory: kinda
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+          mix deps.get
+          mix docs
+
+      - name: Build Beaver docs
+        working-directory: beaver
+        env:
+          LLVM_CONFIG_PATH: ${{ github.workspace }}/llvm-prebuilt/bin/llvm-config
+          BEAVER_KINDA_PATH: ${{ github.workspace }}/kinda
+          BEAVER_MAKE_FORCE_BUILD: "1"
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+          mix deps.get
+          mix docs
+
+      - name: Assemble site
+        run: |
+          mkdir -p site
+          cp -R beaver/doc site/beaver
+          cp -R kinda/doc site/kinda
+          cp index.html site/index.html
+          cp CNAME site/CNAME
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
