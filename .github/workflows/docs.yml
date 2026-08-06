@@ -33,10 +33,11 @@ jobs:
         with:
           version: 0.16.0
 
-      - name: Checkout beaver and kinda
+      - name: Checkout beaver, kinda and batata
         run: |
           git clone --depth 1 https://github.com/beaver-lodge/beaver.git
           git clone --depth 1 https://github.com/beaver-lodge/kinda.git
+          git clone --depth 1 https://github.com/conformal-elixir/batata.git
 
       - name: Install prebuilt LLVM/MLIR
         run: bash beaver/scripts/install-prebuilt-llvm.sh llvm-prebuilt
@@ -63,11 +64,24 @@ jobs:
           mix deps.get
           mix docs
 
+      - name: Build Batata docs
+        working-directory: batata
+        env:
+          LLVM_CONFIG_PATH: ${{ github.workspace }}/llvm-prebuilt/bin/llvm-config
+          BEAVER_PATH: ${{ github.workspace }}/beaver
+          BEAVER_KINDA_PATH: ${{ github.workspace }}/kinda
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+          mix deps.get
+          mix docs
+
       - name: Assemble site
         run: |
           mkdir -p site
           cp -R beaver/doc site/beaver
           cp -R kinda/doc site/kinda
+          cp -R batata/doc site/batata
           cp index.html site/index.html
           cp CNAME site/CNAME
 
