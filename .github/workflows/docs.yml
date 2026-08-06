@@ -39,8 +39,8 @@ jobs:
           # build regressed on Linux (undefined symbol: beaverContextAddWork in
           # the partition libraries). Unpin once beaver-lodge/beaver main CI is
           # green again.
-          git clone https://github.com/beaver-lodge/beaver.git
-          git -C beaver checkout 55064c5295954a3fb960f197312d7c6b27d5c7b4
+          curl -fsSL https://github.com/beaver-lodge/beaver/archive/55064c5295954a3fb960f197312d7c6b27d5c7b4.tar.gz | tar -xz
+          mv beaver-55064c5295954a3fb960f197312d7c6b27d5c7b4 beaver
           git clone --depth 1 https://github.com/beaver-lodge/kinda.git
           git clone --depth 1 https://github.com/conformal-elixir/batata.git
 
