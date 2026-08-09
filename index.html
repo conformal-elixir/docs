@@ -15,14 +15,49 @@
       a {
         color: #1d4ed8;
       }
+      ul {
+        padding: 0;
+        list-style: none;
+      }
+      li {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .project-docs {
+        font-weight: 600;
+      }
+      .github-link {
+        flex: none;
+        font-size: 0.875rem;
+      }
+      @media (max-width: 520px) {
+        li {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 0.25rem;
+        }
+      }
     </style>
   </head>
   <body>
     <h1>Conformal Elixir Docs</h1>
     <ul>
-      <li><a href="beaver/">Beaver — MLIR Toolkit in Elixir</a></li>
-      <li><a href="kinda/">Kinda — Ship C libraries with Zig-based NIFs for Elixir</a></li>
-      <li><a href="batata/">Batata — Elixir to native compiler on MLIR</a></li>
+      <li>
+        <a class="project-docs" href="beaver/">Beaver — MLIR Toolkit in Elixir</a>
+        <a class="github-link" href="https://github.com/beaver-lodge/beaver">GitHub ↗</a>
+      </li>
+      <li>
+        <a class="project-docs" href="kinda/">Kinda — Ship C libraries with Zig-based NIFs for Elixir</a>
+        <a class="github-link" href="https://github.com/beaver-lodge/kinda">GitHub ↗</a>
+      </li>
+      <li>
+        <a class="project-docs" href="batata/">Batata — Elixir to native compiler on MLIR</a>
+        <a class="github-link" href="https://github.com/batata-lang/batata">GitHub ↗</a>
+      </li>
     </ul>
   </body>
 </html>
