@@ -37,7 +37,7 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/beaver-lodge/beaver.git
           git clone --depth 1 https://github.com/beaver-lodge/kinda.git
-          git clone --depth 1 https://github.com/conformal-elixir/batata.git
+          git clone --depth 1 https://github.com/batata-lang/batata.git
 
       - name: Install prebuilt LLVM/MLIR
         run: bash beaver/scripts/install-prebuilt-llvm.sh llvm-prebuilt
