@@ -6,16 +6,27 @@ on:
     branches: [main]
     paths:
       - .github/workflows/docs.yml
+      - index.html
+      - batata/index.html
+      - CNAME
+  pull_request:
+    paths:
+      - .github/workflows/docs.yml
+      - index.html
+      - batata/index.html
+      - CNAME
   schedule:
     - cron: "23 4 * * 1"
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
+
+defaults:
+  run:
+    shell: bash
 
 concurrency:
-  group: pages
+  group: docs-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -26,29 +37,32 @@ jobs:
 
       - uses: erlef/setup-beam@v1
         with:
-          elixir-version: 1.20.2
-          otp-version: 27.3.4.14
+          elixir-version: "1.20.3"
+          otp-version: "27.3"
 
       - uses: mlugg/setup-zig@v2
         with:
           version: 0.16.0
 
-      - name: Checkout beaver, kinda and batata
+      - name: Checkout public documentation sources
         run: |
           git clone --depth 1 https://github.com/beaver-lodge/beaver.git
-          git clone --depth 1 https://github.com/beaver-lodge/kinda.git
-          git clone --depth 1 https://github.com/batata-lang/batata.git
+          git clone https://github.com/beaver-lodge/kinda.git
+          git -C kinda checkout "$(jq -er '.kinda.ref' beaver/native-deps.json)"
+
+      - name: Install Mix package managers
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
 
       - name: Install prebuilt LLVM/MLIR
         run: bash beaver/scripts/install-prebuilt-llvm.sh llvm-prebuilt
         env:
-          LLVM_EUDSL_ASSET_REVISION: latest
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Build Kinda docs
         working-directory: kinda
         run: |
-          mix local.hex --force
-          mix local.rebar --force
           mix deps.get
           mix docs
 
@@ -59,29 +73,15 @@ jobs:
           BEAVER_KINDA_PATH: ${{ github.workspace }}/kinda
           BEAVER_MAKE_FORCE_BUILD: "1"
         run: |
-          mix local.hex --force
-          mix local.rebar --force
-          mix deps.get
-          mix docs
-
-      - name: Build Batata docs
-        working-directory: batata
-        env:
-          LLVM_CONFIG_PATH: ${{ github.workspace }}/llvm-prebuilt/bin/llvm-config
-          BEAVER_PATH: ${{ github.workspace }}/beaver
-          BEAVER_KINDA_PATH: ${{ github.workspace }}/kinda
-        run: |
-          mix local.hex --force
-          mix local.rebar --force
           mix deps.get
           mix docs
 
       - name: Assemble site
         run: |
-          mkdir -p site
+          mkdir -p site/batata
           cp -R beaver/doc site/beaver
           cp -R kinda/doc site/kinda
-          cp -R batata/doc site/batata
+          cp batata/index.html site/batata/index.html
           cp index.html site/index.html
           cp CNAME site/CNAME
 
@@ -90,8 +90,12 @@ jobs:
           path: site
 
   deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
