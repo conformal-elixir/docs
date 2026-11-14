@@ -4,16 +4,25 @@
     <meta charset="utf-8" />
     <title>Conformal Elixir Docs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Documentation and repositories for Beaver, Kinda, and the Batata compiler components." />
+    <link rel="canonical" href="https://www.conformal-elixir.com/" />
     <style>
       body {
         font-family: system-ui, sans-serif;
-        max-width: 640px;
+        max-width: 760px;
         margin: 4rem auto;
         padding: 0 1rem;
         line-height: 1.6;
       }
       a {
         color: #1d4ed8;
+      }
+      h2 {
+        margin-top: 2.5rem;
+        font-size: 1.25rem;
+      }
+      p {
+        color: #4b5563;
       }
       ul {
         padding: 0;
@@ -27,11 +36,21 @@
         padding: 1rem 0;
         border-bottom: 1px solid #e5e7eb;
       }
-      .project-docs {
+      .project-name {
         font-weight: 600;
       }
-      .github-link {
+      .project-description {
+        margin: 0.25rem 0 0;
+      }
+      .project-links {
+        display: flex;
         flex: none;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.875rem;
+      }
+      footer {
+        margin-top: 3rem;
         font-size: 0.875rem;
       }
       @media (max-width: 520px) {
@@ -44,20 +63,75 @@
     </style>
   </head>
   <body>
-    <h1>Conformal Elixir Docs</h1>
-    <ul>
-      <li>
-        <a class="project-docs" href="beaver/">Beaver — MLIR Toolkit in Elixir</a>
-        <a class="github-link" href="https://github.com/beaver-lodge/beaver">GitHub ↗</a>
-      </li>
-      <li>
-        <a class="project-docs" href="kinda/">Kinda — Ship C libraries with Zig-based NIFs for Elixir</a>
-        <a class="github-link" href="https://github.com/beaver-lodge/kinda">GitHub ↗</a>
-      </li>
-      <li>
-        <a class="project-docs" href="batata/">Batata — Elixir to native compiler on MLIR</a>
-        <a class="github-link" href="https://github.com/batata-lang/batata">GitHub ↗</a>
-      </li>
-    </ul>
+    <main>
+      <h1>Conformal Elixir Docs</h1>
+      <p>Documentation and repositories for Elixir compiler, MLIR, and native binding tools.</p>
+
+      <section aria-labelledby="tools-heading">
+        <h2 id="tools-heading">MLIR and native bindings</h2>
+        <ul>
+          <li>
+            <div>
+              <span class="project-name">Beaver</span>
+              <p class="project-description">MLIR construction, transformation, and execution from Elixir.</p>
+            </div>
+            <div class="project-links">
+              <a href="beaver/" aria-label="Beaver API docs">API docs</a>
+              <a href="https://github.com/beaver-lodge/beaver" aria-label="Beaver on GitHub">GitHub ↗</a>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="project-name">Kinda</span>
+              <p class="project-description">Bind C libraries to the BEAM with Zig.</p>
+            </div>
+            <div class="project-links">
+              <a href="kinda/" aria-label="Kinda API docs">API docs</a>
+              <a href="https://github.com/beaver-lodge/kinda" aria-label="Kinda on GitHub">GitHub ↗</a>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="batata-heading">
+        <h2 id="batata-heading">Batata compiler components</h2>
+        <p>These private repositories require GitHub access.</p>
+        <ul>
+          <li>
+            <div>
+              <span class="project-name">Batata</span>
+              <p class="project-description">Elixir frontend, CLI, and host services for native ProgramImages.</p>
+            </div>
+            <a class="project-links" href="https://github.com/batata-lang/batata" aria-label="Batata on GitHub">GitHub ↗</a>
+          </li>
+          <li>
+            <div>
+              <span class="project-name">Sluice</span>
+              <p class="project-description">Beaver-based MLIR/LLVM compiler provider for Batata.</p>
+            </div>
+            <a class="project-links" href="https://github.com/batata-lang/sluice" aria-label="Sluice on GitHub">GitHub ↗</a>
+          </li>
+          <li>
+            <div>
+              <span class="project-name">BTT contracts and tools</span>
+              <p class="project-description">Shared data and validation, with separate compiler and artifact benchmark crates.</p>
+            </div>
+            <a class="project-links" href="https://github.com/batata-lang/btt-abi" aria-label="BTT contracts and tools on GitHub">GitHub ↗</a>
+          </li>
+          <li>
+            <div>
+              <span class="project-name">BTT Runtime</span>
+              <p class="project-description">Execution kernel, term helpers, garbage collection, and scheduling.</p>
+            </div>
+            <a class="project-links" href="https://github.com/batata-lang/btt-runtime" aria-label="BTT Runtime on GitHub">GitHub ↗</a>
+          </li>
+        </ul>
+      </section>
+    </main>
+    <footer>
+      <a href="https://github.com/beaver-lodge">Beaver Lodge</a> ·
+      <a href="https://github.com/batata-lang">Batata</a> ·
+      <a href="https://github.com/conformal-elixir/docs">Site source</a>
+    </footer>
   </body>
 </html>
